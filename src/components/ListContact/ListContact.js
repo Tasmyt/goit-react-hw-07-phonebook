@@ -1,19 +1,40 @@
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 import { ItemContact } from '../ItemContact/ItemContact';
-import { getContacts, getFilter } from '../../redax/selectors';
+import { getFiltredContacts } from '../../redax/selectors';
+import { fetchContacts } from 'redax/operations';
+
+const STATUS = {
+	IDLE: 'idle',
+	PENDING: 'pending',
+	REJECTED: 'rejected',
+	FULFILLED: 'fulfilled',
+} 
 
 export const ListContact = () => {
-  const contacts = useSelector(getContacts);
-  const filter = useSelector(getFilter);
-  const contactsFilter = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase()));
+  const {status, error} = useSelector((state) => state.contacts)  
+  const contactsFilter = useSelector(getFiltredContacts);
+  const dispatch = useDispatch();
+  
+  useEffect(() => {
+    dispatch(fetchContacts()); 
+}, [dispatch]);
+  
   return (
-    <ul>
-      {contactsFilter.map(({ id, name, number }) => (        
-        <ItemContact key={id} id = {id} name={name} number={number} />
-      ))}
-    </ul>
+  <>
+    {status === STATUS.PENDING && (<div>
+				<span >Loading...</span>
+      </div>)
+      }      
+      {(status === STATUS.FULFILLED && contactsFilter.length > 0) &&
+        (<ul>
+          {contactsFilter.map(({ id, name, number }) => (
+            <ItemContact key={id} id={id} name={name} number={number} />
+          ))}
+        </ul>)}
+      {status === STATUS.REJECTED && alert(error)}      
+      </>
   );
 };
 
@@ -25,5 +46,5 @@ ListContact.propTypes = {
       number: PropTypes.string.isRequired,
     })
   ),
-  onDeletContact: PropTypes.func.isRequired,
+  onDeletContact: PropTypes.func,
 };

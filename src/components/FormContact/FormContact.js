@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { getContacts } from '../../redax/selectors';
 import { nanoid } from 'nanoid';
-import { addContacts } from 'redax/contactsSlice';
+import { fetchAddContact } from '../../redax/operations';
 import { Form, Lable, Input, Button } from './FormContact.styled';
 
 export default function FormContact() {
@@ -27,7 +27,7 @@ export default function FormContact() {
     if (findNumber) {
       return alert(`${contact.number} is already in use.`);
     }
-    dispatch(addContacts(contact));
+    dispatch(fetchAddContact(contact));
     e.currentTarget.reset();
   };
 
@@ -39,7 +39,7 @@ export default function FormContact() {
         <Input
           type="text"
           name="name"
-          // onChange={inputChange}
+          placeholder="Name"          
           // pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
           title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
           required
@@ -51,7 +51,7 @@ export default function FormContact() {
         <Input
           type="tel"
           name="number"
-          // onChange={inputChange}
+          placeholder="Number"          
           // pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
           title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
           required

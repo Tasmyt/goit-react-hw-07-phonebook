@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
-import { deleteContact } from 'redax/contactsSlice';
+import { fetchDelContact } from 'redax/operations';
 import { useDispatch } from 'react-redux';
 import { Li, Button } from "./ItemContact.styled";
 
 export const ItemContact = ({ id, name, number }) => {
   const dispatch = useDispatch();
   
-  const onDeletContact = id => { dispatch(deleteContact(id)) };
+  const onDeletContact = id => { dispatch(fetchDelContact(id)) };
   return (
     
       <li key={id}>
